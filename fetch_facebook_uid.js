@@ -13,54 +13,67 @@ class FacebookUIDFetcher {
 	async fetchUID() {
 		const fetch = (await import('node-fetch')).default;
 		const fs = await import('fs');
-		try {
-			const response = await fetch(this.url, {
-				method: 'GET',
-				headers: {
-					'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-					'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
-					'Accept-Language': 'en-US,en;q=0.9,vi;q=0.8',
-					'Accept-Encoding': 'gzip, deflate, br',
-					'Connection': 'keep-alive',
-					'Upgrade-Insecure-Requests': '1',
-					'Sec-Fetch-Dest': 'document',
-					'Sec-Fetch-Mode': 'navigate',
-					'Sec-Fetch-Site': 'none',
-					'Cache-Control': 'max-age=0'
-				},
-				redirect: 'follow'
-			});
+		
+		// Thử cả desktop và mobile version
+		const urls = [
+			this.url,
+			this.url.replace('www.facebook.com', 'm.facebook.com'),
+			this.url.replace('facebook.com', 'm.facebook.com')
+		];
+		
+		for (let i = 0; i < urls.length; i++) {
+			const url = urls[i];
+			console.log(`Thử URL ${i + 1}: ${url}`);
+			
+			try {
+				const response = await fetch(url, {
+					method: 'GET',
+					headers: {
+						'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 14_7_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.1.2 Mobile/15E148 Safari/604.1',
+						'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+						'Accept-Language': 'en-US,en;q=0.9,vi;q=0.8',
+						'Accept-Encoding': 'gzip, deflate, br',
+						'Connection': 'keep-alive',
+						'Upgrade-Insecure-Requests': '1'
+					},
+					redirect: 'follow'
+				});
 
-			if (!response.ok) {
-				throw new Error(`HTTP error! Status: ${response.status}`);
-			}
-
-			const html = await response.text();
-			fs.writeFileSync('debug.html', html);
-
-			const patterns = [
-				/"userID":"(\d+)"/,
-				/"user_id":"(\d+)"/,
-				/"entity_id":"(\d+)"/,
-				/"page_id":"(\d+)"/,
-				/data-testid="page_id" value="(\d+)"/,
-				/page_id=(\d+)/,
-				/profile_id=(\d+)/,
-				/"profile_id":"(\d+)"/,
-				/"actorID":"(\d+)"/,
-				/"actor_id":"(\d+)"/
-			];
-
-			for (const pattern of patterns) {
-				const match = html.match(pattern);
-				if (match && match[1]) {
-					return match[1];
+				if (!response.ok) {
+					console.log(`HTTP error! Status: ${response.status} cho URL: ${url}`);
+					continue;
 				}
+
+				const html = await response.text();
+				fs.writeFileSync(`debug_${i}.html`, html);
+
+				const patterns = [
+					/"userID":"(\d+)"/,
+					/"user_id":"(\d+)"/,
+					/"entity_id":"(\d+)"/,
+					/"page_id":"(\d+)"/,
+					/data-testid="page_id" value="(\d+)"/,
+					/page_id=(\d+)/,
+					/profile_id=(\d+)/,
+					/"profile_id":"(\d+)"/,
+					/"actorID":"(\d+)"/,
+					/"actor_id":"(\d+)"/
+				];
+
+				for (const pattern of patterns) {
+					const match = html.match(pattern);
+					if (match && match[1]) {
+						return match[1];
+					}
+				}
+				return null;
+			} catch (error) {
+				console.log(`Lỗi với URL ${url}: ${error.message}`);
+				continue;
 			}
-			return null;
-		} catch (error) {
-			throw new Error('Lỗi: ' + error.message);
 		}
+		
+		throw new Error('Không thể truy cập được profile này từ tất cả các URL đã thử.');
 	}
 }
 

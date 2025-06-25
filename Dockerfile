@@ -1,4 +1,3 @@
-# Dockerfile (ở thư mục gốc)
 FROM node:18-alpine
 
 WORKDIR /app

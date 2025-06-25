@@ -48,16 +48,47 @@ class FacebookUIDFetcher {
 				fs.writeFileSync(`debug_${i}.html`, html);
 
 				const patterns = [
+					// Meta tags patterns (thường xuất hiện trong HTML của Facebook)
+					/content="fb:\/\/profile\/(\d+)"/,
+					/content="fb:\/\/profile\/\?id=(\d+)/,
+					/app-argument=fb:\/\/profile\/(\d+)"/,
+					/app-argument=fb:\/\/profile\/\?id=(\d+)/,
+					
+					// JSON patterns - cả có và không có dấu ngoặc kép
+					/"userID":(\d+)/,
 					/"userID":"(\d+)"/,
+					/"user_id":(\d+)/,
 					/"user_id":"(\d+)"/,
+					/"entity_id":(\d+)/,
 					/"entity_id":"(\d+)"/,
+					/"page_id":(\d+)/,
 					/"page_id":"(\d+)"/,
+					/"profile_id":(\d+)/,
+					/"profile_id":"(\d+)"/,
+					/"actorID":(\d+)/,
+					/"actorID":"(\d+)"/,
+					/"actor_id":(\d+)/,
+					/"actor_id":"(\d+)"/,
+					/"pageID":(\d+)/,
+					/"pageID":"(\d+)"/,
+					/"profileID":(\d+)/,
+					/"profileID":"(\d+)"/,
+					
+					// Patterns cho các field khác có thể chứa UID
+					/"id":(\d{10,})/,
+					/"id":"(\d{10,})"/,
+					/userID:(\d+)/,
+					/pageID:(\d+)/,
+					/profileID:(\d+)/,
+					
+					// HTML attributes patterns
 					/data-testid="page_id" value="(\d+)"/,
 					/page_id=(\d+)/,
 					/profile_id=(\d+)/,
-					/"profile_id":"(\d+)"/,
-					/"actorID":"(\d+)"/,
-					/"actor_id":"(\d+)"/
+					
+					// URL patterns trong các link
+					/facebook\.com\/profile\.php\?id=(\d+)/,
+					/\/profile\/(\d+)/
 				];
 
 				for (const pattern of patterns) {

@@ -1,0 +1,20 @@
+version: '3.8'
+
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    volumes:
+      - .:/app
+    restart: unless-stopped
+
+  web:
+    build: ./web-interface
+    ports:
+      - "80:80"
+    depends_on:
+      - api
+    restart: unless-stopped

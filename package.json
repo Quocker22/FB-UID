@@ -4,6 +4,9 @@
   "description": "",
   "main": "fetch_facebook_uid.js",
   "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js",
+    "cli": "node fetch_facebook_uid.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],

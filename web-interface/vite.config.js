@@ -43,10 +43,17 @@ export default defineConfig({
   },
   // Development server
   server: {
-    port: 3000,
+    port: 3001,
     open: true,
     cors: true,
-    host: true // Allow external access
+    host: true, // Allow external access
+    proxy: {
+      '/api': {
+        target: 'http://localhost:3000',
+        changeOrigin: true,
+        secure: false
+      }
+    }
   },
   // Base path cho production
   base: './',

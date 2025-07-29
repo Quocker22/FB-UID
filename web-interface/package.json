@@ -14,7 +14,7 @@
     "build:clean": "npm run clean && npm run build"
   },
   "dependencies": {
-    "node-fetch": "^3.3.2"
+    "node-fetch": "^2.7.0"
   },
   "devDependencies": {
     "terser": "^5.41.0",

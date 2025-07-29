@@ -110,6 +110,7 @@ class FacebookUIDFinder {
 
     async fetchUID(identifier) {
         try {
+            console.log('Fetching UID for:', identifier); // Debug log
             const response = await fetch('/api/fetch-uid', {
                 method: 'POST',
                 headers: {
@@ -117,6 +118,8 @@ class FacebookUIDFinder {
                 },
                 body: JSON.stringify({ identifier })
             });
+            
+            console.log('Response status:', response.status); // Debug log
 
             if (!response.ok) {
                 throw new Error(`HTTP error! Status: ${response.status}`);
@@ -135,6 +138,7 @@ class FacebookUIDFinder {
     }
 
     async handleSubmit() {
+        console.log('handleSubmit called'); // Debug log
         const input = this.urlInput.value.trim();
         if (!input) {
             this.showError('Vui lòng nhập Facebook URL hoặc username');

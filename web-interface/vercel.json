@@ -7,6 +7,10 @@
       "config": {
         "distDir": "dist"
       }
+    },
+    {
+      "src": "api/fetch-uid.js",
+      "use": "@vercel/node"
     }
   ],
   "routes": [

@@ -56,7 +56,7 @@ export default defineConfig({
     }
   },
   // Base path cho production
-  base: './',
+  base: '/',
   // Resolve aliases
   resolve: {
     alias: {

@@ -1,4 +1,4 @@
-const fetch = require('node-fetch');
+// Sử dụng built-in fetch trong Node.js 18+
 
 class FacebookUIDFetcher {
     constructor(identifier) {
